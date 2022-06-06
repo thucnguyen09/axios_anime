@@ -8,6 +8,7 @@ class SiteController {
         let listFilmsCurrentPage = [];
         let totalPages = 0;
         const listAxios = [];
+        const limit = Number(req.query.limit);
         try {
             axios(url).then((response) => {
                 const html = response.data;
@@ -29,6 +30,13 @@ class SiteController {
                         listFilmsCurrentPage = handler(resp[i]);
                         listAllFilms.push(...listFilmsCurrentPage);
                     }
+                    if(limit && limit < listAllFilms.length) {
+                        res.status(200).json({
+                            length: limit,
+                            data: listAllFilms.slice(0, limit),
+                        });
+                        return;    
+                    } 
                     res.status(200).json({
                         length: listAllFilms.length,
                         data: listAllFilms,
